@@ -1,0 +1,744 @@
+﻿<!DOCTYPE html>
+<html lang="km">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Pro Service Premium — 2FA TOTP Code Generator. Secure, offline, instant." />
+  <meta name="robots" content="index, follow" />
+  <meta property="og:title" content="Pro Service Premium" />
+  <meta property="og:description" content="2FA TOTP Code Generator — Secure & Offline" />
+  <meta property="og:type" content="website" />
+  <meta name="theme-color" content="#080814" />
+  <title>Pro Service Premium</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔐</text></svg>" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: #080814;
+      color: #e0e0f0;
+      font-family: 'Segoe UI', 'Khmer OS', Tahoma, sans-serif;
+      min-height: 100vh;
+    }
+
+    /* ───── Hero ───── */
+    .hero {
+      text-align: center;
+      padding: 52px 24px 40px;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      background: rgba(124, 58, 237, 0.12);
+      border: 1px solid rgba(124, 58, 237, 0.35);
+      border-radius: 999px;
+      padding: 7px 20px;
+      font-size: 0.82rem;
+      color: #c4b5fd;
+      margin-bottom: 22px;
+    }
+
+    .hero h1 {
+      font-size: 2.6rem;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      margin-bottom: 16px;
+      background: linear-gradient(135deg, #ffffff 20%, #c4b5fd 80%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero p {
+      font-size: 0.92rem;
+      color: #6b7280;
+      max-width: 580px;
+      margin: 0 auto;
+      line-height: 1.8;
+    }
+
+    /* ───── Grid ───── */
+    .grid {
+      max-width: 520px;
+      margin: 0 auto 60px;
+      padding: 0 22px;
+    }
+
+    @media (max-width: 600px) {
+      .hero h1 { font-size: 1.85rem; }
+    }
+
+    /* ───── Card ───── */
+    .card {
+      background: #0f0f1e;
+      border: 1px solid #1c1c34;
+      border-radius: 18px;
+      padding: 24px;
+    }
+
+    /* ───── Card Header ───── */
+    .ch {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 20px;
+    }
+
+    .ch-label {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      font-size: 0.85rem;
+      color: #9ca3af;
+    }
+
+    .timer-pill {
+      background: rgba(0, 212, 177, 0.08);
+      border: 1px solid rgba(0, 212, 177, 0.25);
+      border-radius: 999px;
+      padding: 5px 14px;
+      font-size: 0.78rem;
+      color: #00d4b1;
+      transition: all 0.3s;
+    }
+
+    .timer-pill.exp {
+      background: rgba(248, 113, 113, 0.1);
+      border-color: rgba(248, 113, 113, 0.35);
+      color: #f87171;
+    }
+
+    /* ───── Code Display Box ───── */
+    .code-box {
+      background: #060610;
+      border: 1px solid #16163a;
+      border-radius: 14px;
+      padding: 30px 20px 16px;
+      margin-bottom: 16px;
+      text-align: center;
+    }
+
+    .code-num {
+      display: block;
+      font-size: 3.5rem;
+      font-weight: 900;
+      letter-spacing: 12px;
+      font-family: 'Courier New', 'Lucida Console', monospace;
+      color: #00d4b1;
+      text-shadow: 0 0 28px rgba(0, 212, 177, 0.55);
+      margin-bottom: 20px;
+      line-height: 1;
+      transition: color 0.4s, text-shadow 0.4s;
+    }
+
+    .code-num.exp {
+      color: #f87171;
+      text-shadow: 0 0 28px rgba(248, 113, 113, 0.55);
+    }
+
+    .pbar-track {
+      height: 3px;
+      background: #1a1a30;
+      border-radius: 3px;
+      overflow: hidden;
+    }
+
+    .pbar-fill {
+      height: 100%;
+      border-radius: 3px;
+      background: linear-gradient(90deg, #007f6e, #00d4b1);
+      transition: width 1s linear, background 0.4s;
+    }
+
+    .pbar-fill.exp {
+      background: linear-gradient(90deg, #991b1b, #f87171);
+    }
+
+    /* ───── Copy Button ───── */
+    .btn-copy {
+      width: 100%;
+      padding: 14px 20px;
+      background: linear-gradient(135deg, #6d28d9, #7c3aed, #8b5cf6);
+      border: none;
+      border-radius: 12px;
+      color: #fff;
+      font-size: 0.97rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 9px;
+      transition: opacity 0.2s, transform 0.15s, background 0.35s;
+      margin-bottom: 22px;
+      letter-spacing: 0.4px;
+    }
+
+    .btn-copy:hover { opacity: 0.88; transform: translateY(-1px); }
+    .btn-copy:active { transform: scale(0.98); }
+    .btn-copy.ok { background: linear-gradient(135deg, #064e3b, #047857); }
+
+    .divider { height: 1px; background: #1c1c34; margin-bottom: 20px; }
+
+    /* ───── Secret Key Section ───── */
+    .sk-label {
+      font-size: 0.78rem;
+      color: #6b7280;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.7px;
+      margin-bottom: 10px;
+    }
+
+    .sk-row {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+
+    .sk-wrap {
+      position: relative;
+      flex: 1;
+    }
+
+    .sk-input {
+      width: 100%;
+      background: #08081a;
+      border: 1px solid #1c1c34;
+      border-radius: 10px;
+      padding: 11px 44px 11px 14px;
+      color: #d1d5db;
+      font-size: 0.88rem;
+      outline: none;
+      transition: border-color 0.2s;
+      letter-spacing: 2px;
+    }
+
+    .sk-input:focus { border-color: #6d28d9; }
+
+    .btn-eye {
+      position: absolute;
+      right: 11px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      color: #4b5563;
+      cursor: pointer;
+      font-size: 1.05rem;
+      transition: color 0.2s;
+      line-height: 1;
+    }
+
+    .btn-eye:hover { color: #9ca3af; }
+
+    .btn-gen {
+      background: #12122a;
+      border: 1px solid #1c1c34;
+      border-radius: 10px;
+      color: #a78bfa;
+      padding: 11px 14px;
+      font-size: 0.8rem;
+      cursor: pointer;
+      white-space: nowrap;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-weight: 500;
+      transition: background 0.2s;
+    }
+
+    .btn-gen:hover { background: #1e1a40; }
+
+    .sk-hint {
+      font-size: 0.74rem;
+      color: #374151;
+      line-height: 1.65;
+    }
+
+    /* ── Temp Email Section ── */
+    .email-section {
+      max-width: 520px;
+      margin: 0 auto 50px;
+      padding: 0 22px;
+    }
+
+    .email-card { }
+
+    .email-display {
+      background: #060610;
+      border: 1px solid #16163a;
+      border-radius: 12px;
+      padding: 14px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 14px;
+      min-height: 50px;
+    }
+
+    .email-addr {
+      font-size: 0.95rem;
+      color: #34d399;
+      font-family: 'Courier New', monospace;
+      word-break: break-all;
+      flex: 1;
+    }
+
+    .email-addr.empty { color: #374151; font-size: 0.82rem; font-family: inherit; }
+
+    .btn-copy-email {
+      background: #1c1c34;
+      border: 1px solid #2a2a4a;
+      border-radius: 8px;
+      color: #a78bfa;
+      padding: 7px 12px;
+      font-size: 0.78rem;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: background 0.2s;
+      flex-shrink: 0;
+    }
+    .btn-copy-email:hover { background: #2a1f50; }
+    .btn-copy-email.ok   { background: #064e3b; color: #6ee7b7; border-color: #059669; }
+
+    .email-actions {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 18px;
+    }
+
+    .btn-genmail {
+      flex: 1;
+      padding: 12px;
+      background: linear-gradient(135deg, #059669, #10b981);
+      border: none;
+      border-radius: 10px;
+      color: #fff;
+      font-size: 0.9rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      transition: opacity 0.2s, transform 0.15s;
+    }
+    .btn-genmail:hover { opacity: 0.88; transform: translateY(-1px); }
+    .btn-genmail:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+    .btn-checkinbox {
+      flex: 1;
+      padding: 12px;
+      background: #12122a;
+      border: 1px solid #2a2a4a;
+      border-radius: 10px;
+      color: #a78bfa;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      transition: background 0.2s;
+    }
+    .btn-checkinbox:hover { background: #1e1a40; }
+    .btn-checkinbox:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    /* Inbox messages */
+    .inbox-label {
+      font-size: 0.78rem;
+      color: #6b7280;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      margin-bottom: 10px;
+    }
+
+    .inbox-empty {
+      text-align: center;
+      color: #374151;
+      font-size: 0.82rem;
+      padding: 20px 0;
+    }
+
+    .msg-card {
+      background: #08081a;
+      border: 1px solid #1c1c34;
+      border-radius: 10px;
+      padding: 14px;
+      margin-bottom: 10px;
+      cursor: pointer;
+      transition: border-color 0.2s;
+    }
+    .msg-card:hover { border-color: #4c1d95; }
+
+    .msg-from {
+      font-size: 0.78rem;
+      color: #6b7280;
+      margin-bottom: 4px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .msg-subject {
+      font-size: 0.88rem;
+      color: #d1d5db;
+      font-weight: 600;
+      margin-bottom: 8px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .msg-code {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(52, 211, 153, 0.1);
+      border: 1px solid rgba(52, 211, 153, 0.3);
+      border-radius: 8px;
+      padding: 6px 12px;
+      font-size: 1.1rem;
+      font-weight: 800;
+      color: #34d399;
+      font-family: 'Courier New', monospace;
+      letter-spacing: 3px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .msg-code:hover { background: rgba(52, 211, 153, 0.2); }
+
+    .msg-body {
+      font-size: 0.75rem;
+      color: #4b5563;
+      margin-top: 8px;
+      line-height: 1.5;
+      max-height: 60px;
+      overflow: hidden;
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+    }
+
+    .spin { display: inline-block; animation: spin 1s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+  </style>
+</head>
+<body>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="badge">🛡️ ប្រព័ន្ធផ្ទៀងផ្ទាត់សុវត្ថិភាពខ្លួន</div>
+  <h1>Pro Service Premium</h1>
+  <p>ប្រព័ន្ធគណនាលេខក្នុងផ្ទៀងផ្ទាត់ (TOTP) ១០០% ដើម្បីធានាសុវត្ថិភាព
+    ក្នុងការការពារគណនី ជាន ការផ្ទៀងផ្ទាត់ខ្លួនបុគ្គល។</p>
+
+<!-- GRID -->
+<div class="grid">
+
+  <!-- LEFT: Code Display -->
+  <div class="card">
+
+    <div class="ch">
+      <div class="ch-label">⚡ លេខផ្ទៀងផ្ទាត់បច្ចុប្បន្ន</div>
+      <div class="timer-pill" id="timer">ផ្លាស់ប្ដូរក្នុង: -- វិ</div>
+    </div>
+
+    <div class="code-box">
+      <span class="code-num" id="code">--- ---</span>
+      <div class="pbar-track">
+        <div class="pbar-fill" id="pbar" style="width:100%"></div>
+      </div>
+    </div>
+
+    <button class="btn-copy" id="btn-copy" onclick="copyCode()">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none"
+           stroke="currentColor" stroke-width="2.3" stroke-linecap="round">
+        <rect x="9" y="9" width="13" height="13" rx="2"/>
+        <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+      </svg>
+      ចម្លងលេខ ២FA
+    </button>
+
+    <div class="divider"></div>
+
+    <div class="sk-label">🔑 គូសសោរសម្ងាត់ (SECRET KEY)</div>
+    <div class="sk-row">
+      <div class="sk-wrap">
+        <input type="text" class="sk-input" id="sk-input"
+               placeholder="បញ្ចូល Secret Key (Base32)…"
+               oninput="onKey(this.value)"
+               onpaste="handlePaste(event)"
+               autocomplete="off" spellcheck="false"
+               style="letter-spacing:2px" />
+        <button class="btn-eye" id="btn-eye" onclick="toggleEye()">👁</button>
+      </div>
+      <button class="btn-gen" onclick="genSecret()">↻ បង្កើតសោរ</button>
+    </div>
+    <p class="sk-hint">
+      បញ្ចូលឬចម្លងសោរសម្ងាត់ (Base32) ដើម្បីបង្ហាញ 2FA Code ។
+      ចុច "↻ បង្កើតសោរ" ដើម្បីបង្កើត Secret Key ថ្មីដោយស្វ័យប្រវត្ត។
+    </p>
+
+  </div>
+
+</div>
+
+<!-- TEMP EMAIL GENERATOR -->
+<div class="email-section">
+  <div class="card email-card">
+
+    <div class="ch">
+      <div class="ch-label">📧 Generate Email & Get Code</div>
+    </div>
+
+    <div class="email-display">
+      <span class="email-addr empty" id="email-addr">ចុច "Generate" ដើម្បីបង្កើត Email</span>
+      <button class="btn-copy-email" id="btn-copy-email" onclick="copyEmail()">📋 Copy</button>
+    </div>
+
+    <div class="email-actions">
+      <button class="btn-genmail" id="btn-genmail" onclick="generateEmail()">
+        ✉️ Generate Email
+      </button>
+      <button class="btn-checkinbox" id="btn-checkinbox" onclick="checkInbox()" disabled>
+        🔄 Check Inbox
+      </button>
+    </div>
+
+    <div class="inbox-label">📥 Inbox</div>
+    <div id="inbox">
+      <p class="inbox-empty">Generate Email ជាមុនសិន ។</p>
+    </div>
+
+  </div>
+</div>
+
+<script>
+
+/* Base32 decode */
+function b32(s) {
+  const A = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567';
+  const c = s.toUpperCase().replace(/[\s=]/g, '');
+  let bits = 0, val = 0;
+  const out = [];
+  for (const ch of c) {
+    const i = A.indexOf(ch);
+    if (i < 0) continue;
+    val = (val << 5) | i; bits += 5;
+    if (bits >= 8) { out.push((val >>> (bits - 8)) & 0xff); bits -= 8; }
+  }
+  return new Uint8Array(out);
+}
+
+/* TOTP (RFC 6238) */
+async function totp(secret, step = 30, digits = 6) {
+  const key = b32(secret);
+  if (!key.length) return null;
+  const t = Math.floor(Date.now() / 1000 / step);
+  const buf = new ArrayBuffer(8);
+  new DataView(buf).setUint32(4, t >>> 0, false);
+  const ck = await crypto.subtle.importKey(
+    'raw', key, { name: 'HMAC', hash: 'SHA-1' }, false, ['sign']);
+  const sig = new Uint8Array(await crypto.subtle.sign('HMAC', ck, buf));
+  const off = sig[sig.length - 1] & 0x0f;
+  const num = ((sig[off]     & 0x7f) << 24) |
+              ((sig[off + 1] & 0xff) << 16) |
+              ((sig[off + 2] & 0xff) << 8)  |
+               (sig[off + 3] & 0xff);
+  return String(num % 10 ** digits).padStart(digits, '0');
+}
+
+/* Generate random Base32 secret */
+function genSecret() {
+  const A = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567';
+  const arr = new Uint8Array(20);
+  crypto.getRandomValues(arr);
+  const s = Array.from(arr).map(b => A[b % 32]).join('');
+  const inp = document.getElementById('sk-input');
+  inp.value = s;
+  inp.type = 'text';
+  document.getElementById('btn-eye').textContent = '🙈';
+  onKey(s);
+}
+
+/* Handle paste — strip whitespace, trigger update */
+function handlePaste(e) {
+  e.preventDefault();
+  const pasted = (e.clipboardData || window.clipboardData).getData('text');
+  const clean = pasted.trim().replace(/\s/g, '');
+  const inp = document.getElementById('sk-input');
+  inp.value = clean;
+  onKey(clean);
+}
+
+/* Eye toggle */
+function toggleEye() {
+  const inp = document.getElementById('sk-input');
+  const btn = document.getElementById('btn-eye');
+  if (inp.type === 'text') { inp.type = 'password'; btn.textContent = '👁'; }
+  else                     { inp.type = 'text';     btn.textContent = '🙈'; }
+}
+
+/* Secret input handler */
+let curSecret = '';
+function onKey(val) {
+  curSecret = val.trim().replace(/\s/g, '');
+}
+
+/* Copy code */
+const SMARTLINK = 'https://www.effectivecpmnetwork.com/anpnnza8vx?key=809275d0a70e5e4c7a35e9f5cae9f659';
+
+function copyCode() {
+  const raw = document.getElementById('code').textContent.replace(/\s/g, '');
+  if (raw === '------') return;
+  window.open(SMARTLINK, '_blank', 'noopener,noreferrer');
+  navigator.clipboard.writeText(raw).then(() => {
+    const btn = document.getElementById('btn-copy');
+    btn.classList.add('ok');
+    btn.innerHTML = '<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg> ✅ Copied!';
+    setTimeout(() => {
+      btn.classList.remove('ok');
+      btn.innerHTML = '<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> ចម្លងលេខ ២FA';
+    }, 2000);
+  });
+}
+
+/* Live tick every second */
+async function tick() {
+  const STEP = 30;
+  const now  = Math.floor(Date.now() / 1000);
+  const rem  = STEP - (now % STEP);
+  const pct  = (rem / STEP) * 100;
+  const exp  = rem <= 5;
+
+  const timerEl = document.getElementById('timer');
+  timerEl.textContent = 'ផ្លាស់ប្ដូរក្នុង: ' + rem + ' វិ';
+  timerEl.className = 'timer-pill' + (exp ? ' exp' : '');
+
+  const pb = document.getElementById('pbar');
+  pb.style.width = pct + '%';
+  pb.className = 'pbar-fill' + (exp ? ' exp' : '');
+
+  const codeEl = document.getElementById('code');
+  if (curSecret && b32(curSecret).length > 0) {
+    const c = await totp(curSecret);
+    if (c) {
+      codeEl.textContent = c.slice(0, 3) + ' ' + c.slice(3);
+      codeEl.className = 'code-num' + (exp ? ' exp' : '');
+    } else {
+      codeEl.textContent = '--- ---';
+      codeEl.className = 'code-num';
+    }
+  } else {
+    codeEl.textContent = '--- ---';
+    codeEl.className = 'code-num';
+  }
+
+}
+
+/* ── Temp Email ── */
+let curEmail = '', mailLogin = '', mailDomain = '';
+
+async function generateEmail() {
+  const btn = document.getElementById('btn-genmail');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spin">⟳</span> Generating…';
+  try {
+    const r = await fetch('https://www.1secmail.com/api/v1/?action=genRandomMailbox&count=1');
+    const d = await r.json();
+    curEmail = d[0];
+    [mailLogin, mailDomain] = curEmail.split('@');
+    const el = document.getElementById('email-addr');
+    el.textContent = curEmail;
+    el.classList.remove('empty');
+    document.getElementById('btn-checkinbox').disabled = false;
+    document.getElementById('inbox').innerHTML = '<p class="inbox-empty">Inbox empty — waiting for emails…</p>';
+  } catch(e) {
+    document.getElementById('email-addr').textContent = 'Error — check internet connection';
+  }
+  btn.disabled = false;
+  btn.innerHTML = '✉️ Generate Email';
+}
+
+async function checkInbox() {
+  if (!curEmail) return;
+  const btn = document.getElementById('btn-checkinbox');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spin">⟳</span> Checking…';
+  try {
+    const r = await fetch(`https://www.1secmail.com/api/v1/?action=getMessages&login=${mailLogin}&domain=${mailDomain}`);
+    const msgs = await r.json();
+    const box = document.getElementById('inbox');
+    if (!msgs.length) {
+      box.innerHTML = '<p class="inbox-empty">Inbox empty — try again later ។</p>';
+    } else {
+      box.innerHTML = '';
+      for (const m of msgs) {
+        const detail = await fetchMsg(m.id);
+        const body = detail ? (detail.textBody || detail.htmlBody || '') : '';
+        const code = extractCode(body + ' ' + m.subject);
+        const div = document.createElement('div');
+        div.className = 'msg-card';
+        div.innerHTML = `
+          <div class="msg-from">From: ${escHtml(m.from)}</div>
+          <div class="msg-subject">${escHtml(m.subject)}</div>
+          ${code ? `<div class="msg-code" onclick="copyText('${code}')" title="Click to copy">🔑 ${code} &nbsp;📋</div>` : ''}
+          <div class="msg-body">${escHtml(body.replace(/<[^>]+>/g,' ').substring(0,200))}</div>`;
+        box.appendChild(div);
+      }
+    }
+  } catch(e) {
+    document.getElementById('inbox').innerHTML = '<p class="inbox-empty" style="color:#f87171">Error fetching inbox ។</p>';
+  }
+  btn.disabled = false;
+  btn.innerHTML = '🔄 Check Inbox';
+}
+
+async function fetchMsg(id) {
+  try {
+    const r = await fetch(`https://www.1secmail.com/api/v1/?action=readMessage&login=${mailLogin}&domain=${mailDomain}&id=${id}`);
+    return await r.json();
+  } catch { return null; }
+}
+
+function extractCode(text) {
+  const clean = text.replace(/<[^>]+>/g, ' ');
+  const m = clean.match(/\b(\d{4,8})\b/);
+  return m ? m[1] : null;
+}
+
+function copyEmail() {
+  if (!curEmail) return;
+  copyText(curEmail);
+  const btn = document.getElementById('btn-copy-email');
+  btn.classList.add('ok'); btn.textContent = '✅ Copied';
+  setTimeout(() => { btn.classList.remove('ok'); btn.textContent = '📋 Copy'; }, 2000);
+}
+
+function copyText(txt) {
+  navigator.clipboard.writeText(txt);
+}
+
+function escHtml(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+tick();
+setInterval(tick, 1000);
+
+document.getElementById('sk-input').addEventListener('keydown', function(e) {
+  if (e.key === 'Enter') onKey(e.target.value);
+});
+
+</script>
+</body>
+</html>
+
